@@ -9,7 +9,7 @@ library(readxl)
 library(haven)
 ```
 
-##Problem 1
+## Problem 1
 
 **Read and clean the data; retain line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance. Convert the entry variable from character (YES vs NO) to a logical variable (the ifelse or case_match function may be useful).**
 
@@ -54,4 +54,21 @@ After cleaning the data according to the instructions, there are also rows of id
 distinct(NYC_Transit_df, line, station_name)
 ```
 465 distinct stations
+
+*   How many stations are ADA compliant?
+
+```{r}
+sum(NYC_Transit_df %>% 
+                 pull(ada))
+```
+468 stations (including duplicates)
+
+```{r}
+Distinct_ada_df = 
+filter(NYC_Transit_df, ada == TRUE) %>% 
+  distinct(line, station_name)
+```
+84 distinct ADA compliant stations
+
+*   What proportion of station entrances / exits without vending allow entrance?
 
