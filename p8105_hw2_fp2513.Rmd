@@ -78,3 +78,27 @@ NYC_Transit_df %>%
   summarise(proportion= sum(entry = TRUE) / n())
 ```
 0.00546 (5.46%) stations without vending allow entrance
+
+**Reformat data so that route number and route name are distinct variables.**
+
+How many distinct stations serve the A train? Of the stations that serve the A train, how many are ADA compliant?
+
+
+## Problem 2
+
+**Read and clean the Mr. Trash Wheel sheet:**
+
+*   specify the sheet in the Excel file and to omit non-data entries (rows with notes / figures; columns containing notes) using arguments in read_excel
+
+*   use reasonable variable names
+
+*   omit rows that do not include dumpster-specific data
+
+*   round the number of sports balls to the nearest integer and converts the result to an integer variable (using as.integer)
+
+```{r}
+Trash_Wheel_df = 
+  read_xlsx("202309 Trash Wheel Collection Data.xlsx", sheet = 1, 
+           na = c("NA", ",", "."))
+```
+
