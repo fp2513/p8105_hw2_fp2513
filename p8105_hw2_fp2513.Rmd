@@ -170,3 +170,25 @@ sum(Trash_Tidy_df %>%
     )
 ```
 A total of 18120 cigarette butts were collected by Gwynnda in June of 2022.
+
+##Problem 3
+
+**In the first part of this problem, your goal is to create a single, well-organized dataset with all the information contained in these data files. To that end: import, clean, tidy, and otherwise wrangle each of these datasets; check for completeness and correctness across datasets (e.g. by viewing individual datasets and using anti_join); merge to create a single, final dataset; and organize this so that variables and observations are in meaningful orders. Export the result as a CSV in the directory containing the original datasets.**
+
+```{r}
+Bakers_df = 
+  read_csv(file = "gbb_datasets/bakers.csv", 
+           na = c("NA", ",", ".")) %>% 
+  janitor::clean_names()
+
+Bakes_df = 
+  read_csv(file = "gbb_datasets/bakes.csv", 
+           na = c("NA", ",", ".")) %>% 
+  janitor::clean_names()
+
+Results_df = 
+  read_csv(file = "gbb_datasets/results.csv", 
+           na = c("NA", ",", ".")) %>% 
+  janitor::clean_names()
+```
+
