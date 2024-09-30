@@ -107,7 +107,10 @@ Mr_Trash_Wheel_df =
     sports_balls = 
       round(
         sports_balls),
-    sports_balls = as.integer(sports_balls))
+    sports_balls = as.integer(sports_balls)) %>% 
+  mutate(
+    wheel_name = "Mr"
+  )
 ```
 
 **Use a similar process to import, clean, and organize the data for Professor Trash Wheel and Gwynnda, and combine this with the Mr. Trash Wheel dataset to produce a single tidy dataset. To keep track of which Trash Wheel is which, you may need to add an additional variable to both datasets before combining.**
@@ -116,13 +119,32 @@ Mr_Trash_Wheel_df =
 Professor_Trash_Wheel_df = 
   read_xlsx("202309 Trash Wheel Collection Data.xlsx", sheet = 2, 
            na = c("NA", ",", ".")) %>% 
-  janitor::clean_names() 
+  janitor::clean_names() %>% 
+  mutate(
+    wheel_name = "Professor") %>% 
+  mutate(
+    year = 
+      as.character(year)
+  )
 
 Gwynnda_Trash_Wheel_df = 
   read_xlsx("202309 Trash Wheel Collection Data.xlsx", sheet = 4, 
            na = c("NA", ",", ".")) %>% 
-  janitor::clean_names()
+  janitor::clean_names() %>% 
+  mutate(
+    wheel_name = "Gwynnda") %>% 
+  mutate(
+    year = 
+      as.character(year)
+  )
 ```
 
+```{r}
+Trash_Tidy_df = 
+  bind_rows(Mr_Trash_Wheel_df, Professor_Trash_Wheel_df, Gwynnda_Trash_Wheel_df) %>% 
+  janitor::clean_names()
+
+arrange(Trash_Tidy_df, dumpster, wheel_name)
+```
 
 
