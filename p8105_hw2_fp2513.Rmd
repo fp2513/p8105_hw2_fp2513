@@ -97,7 +97,7 @@ How many distinct stations serve the A train? Of the stations that serve the A t
 *   round the number of sports balls to the nearest integer and converts the result to an integer variable (using as.integer)
 
 ```{r}
-Trash_Wheel_df = 
+Mr_Trash_Wheel_df = 
   read_xlsx("202309 Trash Wheel Collection Data.xlsx", sheet = 1, 
            na = c("NA", ",", ".")) %>% 
   janitor::clean_names() %>% 
@@ -109,5 +109,20 @@ Trash_Wheel_df =
         sports_balls),
     sports_balls = as.integer(sports_balls))
 ```
+
+**Use a similar process to import, clean, and organize the data for Professor Trash Wheel and Gwynnda, and combine this with the Mr. Trash Wheel dataset to produce a single tidy dataset. To keep track of which Trash Wheel is which, you may need to add an additional variable to both datasets before combining.**
+
+```{r}
+Professor_Trash_Wheel_df = 
+  read_xlsx("202309 Trash Wheel Collection Data.xlsx", sheet = 2, 
+           na = c("NA", ",", ".")) %>% 
+  janitor::clean_names() 
+
+Gwynnda_Trash_Wheel_df = 
+  read_xlsx("202309 Trash Wheel Collection Data.xlsx", sheet = 4, 
+           na = c("NA", ",", ".")) %>% 
+  janitor::clean_names()
+```
+
 
 
