@@ -99,6 +99,15 @@ How many distinct stations serve the A train? Of the stations that serve the A t
 ```{r}
 Trash_Wheel_df = 
   read_xlsx("202309 Trash Wheel Collection Data.xlsx", sheet = 1, 
-           na = c("NA", ",", "."))
+           na = c("NA", ",", ".")) %>% 
+  janitor::clean_names() %>% 
+  select(-(x15)) %>% 
+  select(-(x16)) %>% 
+  mutate(
+    sports_balls = 
+      round(
+        sports_balls),
+    sports_balls = as.integer(sports_balls))
 ```
+
 
