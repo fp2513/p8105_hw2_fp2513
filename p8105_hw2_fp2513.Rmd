@@ -213,7 +213,7 @@ Bakers_Bakes_Join_df =
   left_join(Bakers_df, Bakes_df, by = c("baker", "series"))
 
 Bakers_Bakes_Results_Join_df = 
-  full_join(Results_df, Bakers_Bakes_Join_df) %>% 
+  full_join(Bakers_Bakes_Join_df, Results_df) %>% 
   select(-(baker))
 ```
 
@@ -222,7 +222,10 @@ missing_bakers = Results_df %>%
   anti_join(Bakers_Bakes_Results_Join_df, by = c("baker" = "baker_name", "series" = "series"))
 ```
 
-Need to organise my columns in a meaningfull way 
+```{r}
+Bakers_Bakes_Results_Join_df =
+  arrange(Bakers_Bakes_Results_Join_df, series, episode, baker_name)
+```
 
 ```{r}
 write_csv(Bakers_Bakes_Results_Join_df, "gbb_datasets/Bakers_Bakes_Results_Join_df.csv")
@@ -245,3 +248,5 @@ My first join was between the Bakers_df and Bakes_df. I realised that in  Bakes_
 I decided to full join between the Bakers_Bakes_df and Results_df, because I noticed that when I left joined the two, all bakers were there but there were some missing observations of results. This was spotted through `anti_join` to see if there were any results in the Results_df but not in the resultant Bakers_Bakes_Results_Join_df. Furthermore, I noticed that there were only 573 observations in the resultant data frame but 1137 observations in the Results_df which meant that some results were missing. I realised that the results included NA when the baker had been outed, whereas in the Bakers_Bakes_df this only included information of when the bakes and therefore when the baker was still 'in' the show. To solve this, I decided to `full_join` the Bakers_Bakes_df and Results_df instead. This way I would maintain consistent information on the baker even when they had left the show.(cleaning up the resulting dataframe also involved deleting the baker column that I recreated for the Bakers_df of only the first name and retaining the first and last name 'baker_name' column). My only concern was that there are 
 
 After all this, I used `anti_join` to see whether I had missed any observations. Checking for bakers in 'Bakers_df' not in 'Bakes_df' I realised that Jo recorded in Bakers_df as Jo was recorded as "Jo" in the Bakes_df. This meant that Jo's information in Bakers_df was not paired with their information in Bakes_df. I went back and `case_when` in the bakers column "Jo" appear it would be renamed as just Jo. 
+
+Lastly, I arranged the final Bakers_Bakes_Results_df, so that it is ordered by series, episode and baker's name. 
