@@ -269,5 +269,15 @@ Season 7 Candice Brown winner was not unsurprising with several STAR BAKER award
 
 Season 10 was a surprising win, as David won in the last episode without ever being the STAR BAKER in any episode prior. 
 
+**Import, clean, tidy, and organize the viewership data in viewers.csv. Show the first 10 rows of this dataset. What was the average viewership in Season 1? In Season 5?**
+
+```{r}
+Viewers_df = 
+  read_csv(file = "gbb_datasets/viewers.csv", 
+           na = c("NA", ",", ".")) %>% 
+  janitor::clean_names()
+```
+
+
 
 
