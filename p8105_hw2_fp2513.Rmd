@@ -210,7 +210,7 @@ Bakers_df =
   mutate(baker = word(baker_name, 1))
 
 Bakers_Bakes_Join_df =
-  left_join(Bakers_df, Bakes_df, by = c("baker" = "baker", "series" = "series"))
+  left_join(Bakers_df, Bakes_df, by = c("baker", "series"))
 
 Bakers_Bakes_Results_Join_df = 
   left_join(Bakers_Bakes_Join_df, Results_df, by = c("baker", "series", "episode")) %>% 
@@ -218,9 +218,12 @@ Bakers_Bakes_Results_Join_df =
 ```
 
 ```{r}
-missing_bakers = Bakes_df %>%
-  anti_join(Bakers_df, by = c("baker" = "baker", "series" = "series"))
+missing_bakers = Results_df %>%
+  anti_join(Bakers_Bakes_Results_Join_df, by = c("baker" = "baker_name", "series" = "series"))
+```
 
+```{r}
+write_csv(Bakers_Bakes_Results_Join_df, "gbb_datasets/Bakers_Bakes_Results_Join_df.csv")
 ```
 
 
@@ -235,10 +238,8 @@ If I wanted to join the dataframes via the bakers' names, I realised that in Bak
 
 My order of joining was chosen so that in the resulting data frame the variables and observations were in meaningful orders. Starting out with the baker (including the season they appeared on and their personal information), then what they baked and on what episode,  and then lastly the result of that bake on that episode. 
 
-My first join was between the Bakers_df and Bakes_df. I realised that in  Bakes_df, bakers and their baked goods were listed by season but also by episode (in Bakers_df bakers were only listed by the season they appeared in). This meant that the number of rows for Bakers_df 'bakers' needed to be increased to account for each episode that they appeared in in the season. The `"baker" = "baker"` and `"series" = "series"` with the `=` allowed a multiple mapping criteria and pair as many "baker" from Bakers_df to "baker" from Bakes_df. This meant that if a baker in Bakers_df corresponds to multiple entries in Bakes_df, that baker will appear in multiple rows, each with the respective bake.
+My first join was between the Bakers_df and Bakes_df. I realised that in  Bakes_df, bakers and their baked goods were listed by season but also by episode (in Bakers_df bakers were only listed by the season they appeared in). This meant that the number of rows for Bakers_df 'bakers' needed to be increased to account for each episode that they appeared in in the season. I put in the "series" to "series" mapping as well because I realised that sometimes two bakers from two different series will have the same name (especially since now I am only working with first names), so to ensure that I had correct mapping I set a second condition of series to make sure that the correct bake went to the correct baker of that season. 
 
-I put in the "series" to "series" mapping as well because I realised that sometimes two bakers from two different series will have the same name (especially since now I am only working with first names), so to ensure that I had correct mapping I set a second condition of series to make sure that the correct bake went to the correct baker of that season. 
-
-The next join was between the joined Bakers and Bakes dataframe and Results_df. Here since all the necessary rows were available (all the times the baker appeared on the show), this joining only required me to match the baker, series, and episode. I did not need to do multiple mapping and therefore no `=` was needed. (cleaning up the resulting dataframe also involved deleting the baker column that I recreated for the Bakers_df of only the first name and retaining the first and last name 'baker_name' column). 
+The next join was between the joined Bakers and Bakes dataframe and Results_df. This joining required me to match the baker, series, and episode. (cleaning up the resulting dataframe also involved deleting the baker column that I recreated for the Bakers_df of only the first name and retaining the first and last name 'baker_name' column). 
 
 After all this, I used `anti_join` to see whether I had missed any observations. Checking for bakers in 'Bakers_df' not in 'Bakes_df' I realised that Jo recorded in Bakers_df as Jo was recorded as "Jo" in the Bakes_df. This meant that Jo's information in Bakers_df was not paired with their information in Bakes_df. I went back and `case_when` in the bakers column "Jo" appear it would be renamed as just Jo. 
