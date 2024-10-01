@@ -98,7 +98,7 @@ How many distinct stations serve the A train? Of the stations that serve the A t
 
 ```{r}
 Mr_Trash_Wheel_df = 
-  read_xlsx("202309 Trash Wheel Collection Data.xlsx", sheet = 1, 
+  read_xlsx("202409 Trash Wheel Collection Data.xlsx", sheet = 1, 
            na = c("NA", ",", ".")) %>% 
   janitor::clean_names() %>% 
   select(-(x15)) %>% 
@@ -117,7 +117,7 @@ Mr_Trash_Wheel_df =
 
 ```{r}
 Professor_Trash_Wheel_df = 
-  read_xlsx("202309 Trash Wheel Collection Data.xlsx", sheet = 2, 
+  read_xlsx("202409 Trash Wheel Collection Data.xlsx", sheet = 2, 
            na = c("NA", ",", ".")) %>% 
   janitor::clean_names() %>% 
   mutate(
@@ -128,7 +128,7 @@ Professor_Trash_Wheel_df =
   )
 
 Gwynnda_Trash_Wheel_df = 
-  read_xlsx("202309 Trash Wheel Collection Data.xlsx", sheet = 4, 
+  read_xlsx("202409 Trash Wheel Collection Data.xlsx", sheet = 4, 
            na = c("NA", ",", ".")) %>% 
   janitor::clean_names() %>% 
   mutate(
@@ -149,16 +149,15 @@ arrange(Trash_Tidy_df, dumpster, wheel_name)
 
 **Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in the resulting dataset, and give examples of key variables. For available data, what was the total weight of trash collected by Professor Trash Wheel? What was the total number of cigarette butts collected by Gwynnda in June of 2022?**
 
-There are 849 observations and 15 variables in the resulting Trash_Tidy dataframe which combined Mr Trash Wheel, Professor Trash Wheel and Gwynnda Trash Wheel's data. Examples of  key variables include weight_tons (weight of trash collected in tonnes),  wheel_name (distinguishes the source trash wheel of the data observation), and date (the year, month, day which the observation was collected). 
+There are 1038 observations and 15 variables in the resulting Trash_Tidy dataframe which combined Mr Trash Wheel, Professor Trash Wheel and Gwynnda Trash Wheel's data. Examples of  key variables include weight_tons (weight of trash collected in tonnes),  wheel_name (distinguishes the source trash wheel of the data observation), and date (the year, month, day which the observation was collected). 
 
 ```{r}
-sum(Trash_Tidy_df %>% 
-      filter(wheel_name == "Professor") %>% 
-      pull(weight_tons), 
-    na.rm = FALSE
-    )
+Trash_Tidy_df %>% 
+  filter(wheel_name == "Professor") %>% 
+  summarise(total_weight = sum(weight_tons, na.rm = TRUE)
+  )
 ```
-The total weight of trash collected by Professor Trash Wheel was 432.52 tonnes. 
+The total weight of trash collected by Professor Trash Wheel was 488 tonnes. 
 
 ```{r}
 sum(Trash_Tidy_df %>% 
@@ -217,8 +216,8 @@ Bakers_Bakes_Results_Join_df =
 ```
 
 ```{r}
-missing_bakers = Results_df %>%
-  anti_join(Bakers_Bakes_Results_Join_df, by = c("baker" = "baker_name", "series" = "series"))
+missing_bakers = Bakers_df %>%
+  anti_join(Bakers_Bakes_Join_df, by = c("baker" = "baker", "series" = "series"))
 ```
 
 ```{r}
@@ -237,9 +236,9 @@ write_csv(Bakers_Bakes_Results_Join_df, "gbb_datasets/Bakers_Bakes_Results_Join_
 **Describe your data cleaning process, including any questions you have or choices you made. Briefly discuss the final dataset.**
 
 
-First I established that the dataframes all shared a 'baker_name' or 'baker' variable and I decided that the resulting dataframe should be organised by 'baker'/'baker_name' 
+First I established that the dataframes all shared a 'baker_name' or 'baker' variable.
 
-In loading results_df, I realised that the column names were incorrect and that row 2 should be considered as the column names. I re-labled results_df columns with row 2 and deleted row 2. I then also converted results_df variables 'series' and 'episode' from character variables into numeric variables. This was it would be consistent with the bakers and bakes dataframes. 
+I re-labled results_df columns with row 2 and deleted row 2. I then also converted results_df variables 'series' and 'episode' from character variables into numeric variables. This was it would be consistent with the bakers and bakes dataframes. 
 
 If I wanted to join the dataframes via the bakers' names, I realised that in Bakers_df the names of the bakers are listed under both their first and last names. This would make it hard to match with the other dataframes as they only had their bakers listed under their first names. I created a new column in the Bakers_df called 'baker' (consistent with the variable name of the other two dataframes) and had it equal to the first word of their name. 
 
@@ -261,9 +260,9 @@ S5_10_Star_Win =
           result %in% c("STAR BAKER", "WINNER"))
 ```
 
-Surprisingly, in season 5 Nancy Birtwhistle won but she only had 1 STAR BAKER award which was in fact in the first episode. Where as in the same season Richard Burr was the STAR BAKER for half of the season's episodes and even for the 3 episodes right before the last yet he did not win. 
+Surprisingly, in season 5 Nancy Birtwhistle won but she only had 1 STAR BAKER award in the first episode. Where as Richard Burr was the STAR BAKER for half of the season's episodes and even for the 3 episodes right before the last yet he did not win. 
 
-Season 6 was not too surprising, 	Nadiya Hussain won the season but they were the STAR BAKER for the two episodes prior to the finale. 
+Season 6 was not surprising, 	Nadiya Hussain won the season and they were the STAR BAKER for the two episodes prior to the finale. 
 
 Season 7 Candice Brown winner was not unsurprising with several STAR BAKER awards throughout the season. This is similar to the season 8 winner Sophie Faldo and season 9 winner Rahul. 
 
