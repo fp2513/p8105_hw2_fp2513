@@ -280,11 +280,27 @@ Viewers_df =
     series_1:series_10,
     names_to = "series", 
     names_prefix = "series_",
-    values_to = "viewership")
+    values_to = "viewership") %>% 
+  mutate(
+    series = 
+      as.numeric(series)
+  ) %>% 
+  arrange(series)
 
 head(Viewers_df, 10)
 ```
 
+```{r}
+Viewers_df %>% 
+  filter(series == 1) %>% 
+  summarise(mean_viewership_1 = mean(viewership, na.rm = TRUE)
+    )
 
+Viewers_df %>% 
+  filter(series == 5) %>% 
+  summarise(mean_viewership_5 = mean(viewership, na.rm = TRUE)
+    )
+```
 
+Average viewership in season 1 was 2.77 and in season 5 it was 10.0
 
