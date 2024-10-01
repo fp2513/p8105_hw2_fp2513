@@ -81,8 +81,39 @@ NYC_Transit_df %>%
 
 **Reformat data so that route number and route name are distinct variables.**
 
-How many distinct stations serve the A train? Of the stations that serve the A train, how many are ADA compliant?
+**How many distinct stations serve the A train? Of the stations that serve the A train, how many are ADA compliant?**
 
+```{r}
+NYC_Transit_df = 
+  NYC_Transit_df %>%  
+  mutate(
+    route8 = as.character(route8),
+    route9 = as.character(route9),
+    route10 = as.character(route10),
+    route11 = as.character(route11)
+  ) %>%  
+  pivot_longer(
+    route1:route11,
+    names_to = "route",
+    names_prefix = "route",
+    values_to = "train_line"
+  )
+```
+
+```{r}
+Distinct_StationA = 
+filter(NYC_Transit_df, train_line == "A") %>% 
+  distinct(line, station_name)
+```
+60 distinct stations serve the A train
+
+```{r}
+NYC_Transit_df %>% 
+  filter(train_line == "A") %>% 
+  filter(ada == TRUE) %>% 
+  distinct(line, station_name)
+```
+17 distinct stations serve the A train and are ADA compliant. 
 
 ## Problem 2
 
