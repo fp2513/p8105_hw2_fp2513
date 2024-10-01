@@ -275,7 +275,14 @@ Season 10 was a surprising win, as David won in the last episode without ever be
 Viewers_df = 
   read_csv(file = "gbb_datasets/viewers.csv", 
            na = c("NA", ",", ".")) %>% 
-  janitor::clean_names()
+  janitor::clean_names() %>% 
+  pivot_longer(
+    series_1:series_10,
+    names_to = "series", 
+    names_prefix = "series_",
+    values_to = "viewership")
+
+head(Viewers_df, 10)
 ```
 
 
