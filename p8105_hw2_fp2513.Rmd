@@ -213,8 +213,7 @@ Bakers_Bakes_Join_df =
   left_join(Bakers_df, Bakes_df, by = c("baker", "series"))
 
 Bakers_Bakes_Results_Join_df = 
-  full_join(Bakers_Bakes_Join_df, Results_df) %>% 
-  select(-(baker))
+  left_join(Results_df, Bakers_Bakes_Join_df, by = c("baker", "series", "episode"))
 ```
 
 ```{r}
@@ -223,8 +222,11 @@ missing_bakers = Results_df %>%
 ```
 
 ```{r}
-Bakers_Bakes_Results_Join_df =
-  arrange(Bakers_Bakes_Results_Join_df, series, episode, baker_name)
+Bakers_Bakes_Results_Join_df = 
+Bakers_Bakes_Results_Join_df %>% 
+  arrange(series, episode, baker) %>% 
+  select(-one_of(c("technical", "result")), everything(), one_of(c("technical", "result")
+  ))
 ```
 
 ```{r}
@@ -241,12 +243,29 @@ In loading results_df, I realised that the column names were incorrect and that 
 
 If I wanted to join the dataframes via the bakers' names, I realised that in Bakers_df the names of the bakers are listed under both their first and last names. This would make it hard to match with the other dataframes as they only had their bakers listed under their first names. I created a new column in the Bakers_df called 'baker' (consistent with the variable name of the other two dataframes) and had it equal to the first word of their name. 
 
-My order of joining was chosen so that in the resulting data frame the variables and observations were in meaningful orders. Starting out with the baker (including the season they appeared on and their personal information), then what they baked and on what episode,  and then lastly the result of that bake on that episode. 
-
 My first join was between the Bakers_df and Bakes_df. I realised that in  Bakes_df, bakers and their baked goods were listed by season but also by episode (in Bakers_df bakers were only listed by the season they appeared in). This meant that the number of rows for Bakers_df 'bakers' needed to be increased to account for each episode that they appeared in in the season. I put in the "series" to "series" mapping as well because I realised that sometimes two bakers from two different series will have the same name (especially since now I am only working with first names), so to ensure that I had correct mapping I set a second condition of series to make sure that the correct bake went to the correct baker of that season. 
 
-I decided to full join between the Bakers_Bakes_df and Results_df, because I noticed that when I left joined the two, all bakers were there but there were some missing observations of results. This was spotted through `anti_join` to see if there were any results in the Results_df but not in the resultant Bakers_Bakes_Results_Join_df. Furthermore, I noticed that there were only 573 observations in the resultant data frame but 1137 observations in the Results_df which meant that some results were missing. I realised that the results included NA when the baker had been outed, whereas in the Bakers_Bakes_df this only included information of when the bakes and therefore when the baker was still 'in' the show. To solve this, I decided to `full_join` the Bakers_Bakes_df and Results_df instead. This way I would maintain consistent information on the baker even when they had left the show.(cleaning up the resulting dataframe also involved deleting the baker column that I recreated for the Bakers_df of only the first name and retaining the first and last name 'baker_name' column). My only concern was that there are 
+I decided to left join between Results_df and Bakers_Bakes_df, because the Results_df included results regarding the season 9 and 10 of the show, of which the Bakers_Bakes_df did not have. Cleaning up the resultant Results_Bakers_Bakes_df I considered deleting the bakers column and only keeping the bakers_name column but then I realised that the Results_df only included information about the bakers' first names. 
 
 After all this, I used `anti_join` to see whether I had missed any observations. Checking for bakers in 'Bakers_df' not in 'Bakes_df' I realised that Jo recorded in Bakers_df as Jo was recorded as "Jo" in the Bakes_df. This meant that Jo's information in Bakers_df was not paired with their information in Bakes_df. I went back and `case_when` in the bakers column "Jo" appear it would be renamed as just Jo. 
 
-Lastly, I arranged the final Bakers_Bakes_Results_df, so that it is ordered by series, episode and baker's name. 
+Lastly, I arranged the final Bakers_Bakes_Results_df rows, so that it is ordered by series, episode and baker's name. I also re-ordered the columns to be easier to read. Starting out with the baker (including the season they appeared on and their personal information), then what they baked and on what episode,  and then lastly the result of that bake on that episode.
+
+The final data set has 1137 observations with 11 variables. 
+
+**Create a reader-friendly table showing the star baker or winner of each episode in Seasons 5 through 10. Comment on this table – were there any predictable overall winners? Any surprises?**
+
+```{r}
+S5_10_Star_Win = 
+  filter(Bakers_Bakes_Results_Join_df, series %in% 5:10 & 
+          result %in% c("STAR BAKER", "WINNER"))
+```
+
+Surprisingly, in season 5 Nancy Birtwhistle won but she only had 1 STAR BAKER award which was in fact in the first episode. Where as in the same season Richard Burr was the STAR BAKER for half of the season's episodes and even for the 3 episodes right before the last yet he did not win. 
+
+Season 6 was not too surprising, 	Nadiya Hussain won the season but they were the STAR BAKER for the two episodes prior to the finale. 
+
+Season 7 Candice Brown winner was not unsurprising with several STAR BAKER awards throughout the season. This is similar to the season 8 winner Sophie Faldo. 
+
+
+
